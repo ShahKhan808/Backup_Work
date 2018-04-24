@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,16 +7,79 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="67dp"
-            app:srcCompat="@drawable/profileimage" />
-    </RelativeLayout>
-</FrameLayout>
+            android:id="@+id/Profile_Picture"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+    <Button
+        android:id="@+id/upload_photo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/name_and_age_field"
+        android:layout_marginEnd="26dp"
+        android:background="@drawable/round_button"
+        android:gravity="center_vertical|center_horizontal"
+        android:foreground="@android:drawable/ic_menu_upload"
+        android:textColor="#fff"
+        tools:ignore="RtlCompat" />
+
+
+
+
+
+            <TextView
+                android:id="@+id/name_and_age_field"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_height="50dp"
+                android:layout_below="@id/Profile_Picture"
+                android:text="Abdullah, 21" />
+
+            <ImageView
+                android:id="@+id/onlineStat"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/name_and_age_field"
+                android:layout_marginBottom="261dp" />
+
+            <ImageView
+                android:id="@+id/audioPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@id/name_and_age_field"
+                />
+
+            <ImageView
+                android:id="@+id/hobby_1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/audioPlayer"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp"/>
+
+            <ImageView
+                android:id="@+id/hobby_2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/audioPlayer"
+                android:layout_toRightOf="@+id/hobby_1"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"/>
+
+            <ImageView
+                android:id="@+id/hobby_3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_toRightOf="@+id/hobby_2"
+                android:layout_below="@+id/audioPlayer"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"/>
+
+</RelativeLayout>

@@ -33,9 +33,9 @@ public class Notifications extends Fragment {
 
     //private OnFragmentInteractionListener mListener;
 
-//    public Notifications() {
-//        // Required empty public constructor
-//    }
+    public Notifications() {
+        // Required empty public constructor
+    }
 
 //    /**
 //     * Use this factory method to create a new instance of

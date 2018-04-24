@@ -15,4 +15,8 @@
     <!--Ovride the toolbar height-->
     <!--<dimen name="design_bottom_navigation_height" tools:override="true">70dp</dimen>-->
 
+        <!-- Default screen margins, per the Android Design guidelines. -->
+
+        <dimen name="fab_margin">16dp</dimen>
+
 </resources>
