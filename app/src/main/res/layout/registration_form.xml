@@ -131,7 +131,14 @@
                 android:text="@string/register_button"
                 android:textStyle="bold" />
 
-
+            <Button
+                android:id="@+id/verify_email_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:text="Verify Email"
+                />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

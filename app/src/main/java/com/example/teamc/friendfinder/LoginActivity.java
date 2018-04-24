@@ -1,35 +1,15 @@
 package com.example.teamc.friendfinder;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,14 +17,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -76,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(mAuth.getCurrentUser() == null) {
+                if (mAuth.getCurrentUser() == null) {
                     //if user is already logged in, will keep logged in till user logs out
                     //startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
@@ -104,26 +76,66 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth.addAuthStateListener(mAuthListener);
     }
+//    private void sendEmailVerification() {
+//        // Disable button
+//        // findViewById(R.id.registration_button).setEnabled(false);
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        // Send verification email
+//        // [START send_email_verification]
+//        if (user != null) {
+//
+//            user.sendEmailVerification()
+//                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            // [START_EXCLUDE]
+//                            // Re-enable button
+//                            //findViewById(R.id.registration_button).setEnabled(true);
+//
+//                            if (task.isSuccessful()) {
+//                                Toast.makeText(LoginActivity.this,
+//                                        "Check your email for verification",
+//                                        Toast.LENGTH_SHORT).show();
+//                                FirebaseAuth.getInstance().signOut();
+//                            } else {
+//                                Log.e(TAG, "sendEmailVerification", task.getException());
+//                                Toast.makeText(LoginActivity.this,
+//                                        "Failed to send verification email.",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
+//                            // [END_EXCLUDE]
+//                        }
+//                    });
+//        }
+//    }
 
     private void signIn() {
 
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
-        if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             Toast.makeText(LoginActivity.this, "Field is empty", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
 
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
+                    FirebaseUser user = mAuth.getCurrentUser();
                     if (!task.isSuccessful()) {
-                        Toast.makeText(LoginActivity.this, "Problem signing in", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
 
-                    } else {
+                    } else if (user.isEmailVerified() == false) {
+
+                        Toast.makeText(LoginActivity.this, "Email not verified, cannot sign in", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (user.isEmailVerified() == true) {
                         Toast.makeText(LoginActivity.this, "Sign in successful", Toast.LENGTH_SHORT).show();
+                        Intent goToProfile = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(goToProfile);
+                        finish();
+                        //sendEmailVerification();
                     }
                 }
             });

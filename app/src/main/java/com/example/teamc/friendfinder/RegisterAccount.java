@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,9 +23,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterAccount extends AppCompatActivity implements View.OnClickListener {
 
-    private FirebaseAuth mAuth;
     public String TAG = "TAG";
-
+    private FirebaseAuth mAuth;
+    private Button verifyEmailBtn;
     private Button buttonRegister;
     private EditText editTextEmail;
     private EditText editTextPassword;
@@ -35,17 +33,13 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
     private EditText editTextAge;
     private EditText editTextRetypeEmail;
     private EditText editTextRetypePass;
-    private TextView mStatusTextView;
-    private TextView mDetailTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration_form);
 
-        mStatusTextView = (TextView) findViewById(R.id.status);
-        mDetailTextView = (TextView) findViewById(R.id.detail);
-
+        verifyEmailBtn = (Button) findViewById(R.id.verify_email_button);
         buttonRegister = (Button) findViewById(R.id.registration_button);
         editTextEmail = (EditText) findViewById(R.id.register_email);
         editTextPassword = (EditText) findViewById(R.id.register_password);
@@ -64,8 +58,8 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
 //    public void onStart() {
 //        super.onStart();
 //        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        updateUI(currentUser);
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        updateUI(user);
 //    }
 //
 //    @Override
@@ -76,29 +70,39 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
 //        }
 //    }
 
-    private void updateUI(FirebaseUser currentUser) {
-        if (currentUser != null) {
-            mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
-                    currentUser.getEmail(), currentUser.isEmailVerified()));
-            mDetailTextView.setText(getString(R.string.firebase_status_fmt, currentUser.getUid()));
+
+    private void sendEmailVerification() {
+        // Disable button
+        // findViewById(R.id.registration_button).setEnabled(false);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        // Send verification email
+        // [START send_email_verification]
+        if (user != null) {
+
+            user.sendEmailVerification()
+                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // [START_EXCLUDE]
+                            // Re-enable button
+                            //findViewById(R.id.registration_button).setEnabled(true);
+
+                            if (task.isSuccessful()) {
+                                Toast.makeText(RegisterAccount.this,
+                                        "Check your email for verification",
+                                        Toast.LENGTH_SHORT).show();
+                                FirebaseAuth.getInstance().signOut();
+                            } else {
+                                Log.e(TAG, "sendEmailVerification", task.getException());
+                                Toast.makeText(RegisterAccount.this,
+                                        "Failed to send verification email.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            // [END_EXCLUDE]
+                        }
+                    });
         }
     }
-//            findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
-//            findViewById(R.id.email_password_fields).setVisibility(View.GONE);
-//            findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
-//
-//            findViewById(R.id.verify_email_button).setEnabled(!user.isEmailVerified());
-//        }
-//        else
-//            {
-//            mStatusTextView.setText(R.string.signed_out);
-//            mDetailTextView.setText(null);
-//
-//            findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
-//            findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
-//            findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
-//        }
-
 
     private void createAccount(String email, String password) {
 
@@ -110,21 +114,26 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
                 .addOnCompleteListener(RegisterAccount.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             // user registered, start profile activity
-                            Toast.makeText(RegisterAccount.this,"Account Created",Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            Toast.makeText(RegisterAccount.this, "Verify your email", Toast.LENGTH_LONG).show();
+
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
+                            sendEmailVerification();
+
                             //intent takes user back to login activity
 
-                        }
-                        else{
-                            Toast.makeText(RegisterAccount.this,"Could not create account. Please try again",Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(RegisterAccount.this, "Could not create account. Please try again", Toast.LENGTH_SHORT).show();
                         }
 
                         // ...
@@ -148,8 +157,7 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
         String confirmPass = editTextRetypePass.getText().toString();
 
 
-
-        if(TextUtils.isEmpty(name)) {
+        if (TextUtils.isEmpty(name)) {
             //name field is empty
             Toast.makeText(this, "Please enter name", Toast.LENGTH_SHORT).show();
             //stops function from executing further
@@ -157,34 +165,34 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
 
         }
 
-        if(TextUtils.isEmpty(age)) {
+        if (TextUtils.isEmpty(age)) {
             //age field is empty
             Toast.makeText(this, "Please enter age", Toast.LENGTH_SHORT).show();
             //stops function from executing further
             valid = false;
         }
 
-        if(TextUtils.isEmpty(email) || TextUtils.isEmpty(confirmEmail)) {
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(confirmEmail)) {
             //email is empty
             Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show();
             //stops function from executing further
             valid = false;
         }
 
-        if(!email.equals(confirmEmail)){
+        if (!email.equals(confirmEmail)) {
             Toast.makeText(this, "Your emails do not match", Toast.LENGTH_SHORT).show();
             //stop further execution
             valid = false;
         }
 
-        if(TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPass)) {
+        if (TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPass)) {
             //password is empty
             Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show();
             //stops function from executing further
             valid = false;
         }
 
-        if(!password.equals(confirmPass)){
+        if (!password.equals(confirmPass)) {
             Toast.makeText(this, "Your passwords do not match", Toast.LENGTH_SHORT).show();
             //stop further execution
             valid = false;
@@ -195,8 +203,9 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
 
-        if(view == buttonRegister) {
+        if (view == buttonRegister) {
             createAccount(editTextEmail.getText().toString(), editTextPassword.getText().toString());
+
         }
     }
 }
