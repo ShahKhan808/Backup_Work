@@ -20,7 +20,7 @@ import java.util.List;
 
 public class HobbyCodeActivity extends ListActivity {
 
-    public static String RESULT_HOBBYCODE = "hobbycode";
+    public static String RESULT_HOBBYCODE;
     public static Drawable RESULT_ICON;
     public String[] hobbynames, hobbycodes;
     private TypedArray imgs;
@@ -37,6 +37,7 @@ public class HobbyCodeActivity extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Hobbies h = hobbiesList.get(position);
                 RESULT_ICON = hobbiesList.get(position).getIcon();
+                RESULT_HOBBYCODE = hobbiesList.get(position).getName();
 
                 Bitmap bitmap = null;
 
@@ -62,8 +63,10 @@ public class HobbyCodeActivity extends ListActivity {
                 byte[] b = baos.toByteArray();
 
 
+
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("picture", b);
+                returnIntent.putExtra("name", RESULT_HOBBYCODE);
                 setResult(RESULT_OK, returnIntent);
                 imgs.recycle(); //recycle images
                 finish();

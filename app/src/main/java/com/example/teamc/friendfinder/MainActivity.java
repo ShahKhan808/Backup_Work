@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     MyProfile myProfile = new MyProfile();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.content, myProfile, "Fragment Name");
+
                     fragmentTransaction.commit();
 
                     return true;

@@ -127,6 +127,7 @@ public class MyProfile extends Fragment {
 
 
 
+
         return view;
     }
 
@@ -159,16 +160,18 @@ public class MyProfile extends Fragment {
         hobbyIB2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(intent, 1 ); ;
+                startActivityForResult(intent, 2 ); ;
             }
         });
 
         hobbyIB3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(intent, 1 ); ;
+                startActivityForResult(intent, 3 ); ;
             }
         });
+
+
 //        hobby1Btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -228,18 +231,42 @@ public class MyProfile extends Fragment {
 
 
         if(requestCode == 1 && resultCode == Activity.RESULT_OK){
-            String hobby = data.getStringExtra(HobbyCodeActivity.RESULT_HOBBYCODE);
+            String hobby = data.getStringExtra("name");
             byte b[] = data.getByteArrayExtra("picture");
 
             Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
 
             ImageButton hobbyIB1 = (ImageButton) getActivity().findViewById(R.id.hobby_1_img_btn);
-            ImageButton hobbyIB2 = (ImageButton) getActivity().findViewById(R.id.hobby_2_img_btn);
-            ImageButton hobbyIB3 = (ImageButton) getActivity().findViewById(R.id.hobby_3_img_btn);
 
             hobbyIB1.setImageBitmap(bmp);
             Toast.makeText(getActivity(), "You selected Hobby: " + hobby, Toast.LENGTH_LONG).show();
         }
+
+        if(requestCode == 2 && resultCode == Activity.RESULT_OK){
+            String hobby = data.getStringExtra("name");
+            byte b[] = data.getByteArrayExtra("picture");
+
+            Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+
+            ImageButton hobbyIB2 = (ImageButton) getActivity().findViewById(R.id.hobby_2_img_btn);
+
+            hobbyIB2.setImageBitmap(bmp);
+            Toast.makeText(getActivity(), "You selected Hobby: " + hobby, Toast.LENGTH_LONG).show();
+        }
+
+        if(requestCode == 3 && resultCode == Activity.RESULT_OK){
+            String hobby = data.getStringExtra("name");
+            byte b[] = data.getByteArrayExtra("picture");
+
+            Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+
+            ImageButton hobbyIB3 = (ImageButton) getActivity().findViewById(R.id.hobby_3_img_btn);
+
+            hobbyIB3.setImageBitmap(bmp);
+            Toast.makeText(getActivity(), "You selected Hobby: " + hobby, Toast.LENGTH_LONG).show();
+        }
+
+
 
         inputStreamImg = null;
         if (requestCode == PICK_IMAGE_CAMERA) {
