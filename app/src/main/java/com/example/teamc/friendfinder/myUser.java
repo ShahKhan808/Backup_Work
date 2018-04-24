@@ -12,6 +12,7 @@ public class myUser {
     private String userGender;
     private String userId;
     private String userName;
+//    private String url_user;
 
     public myUser() {
 

@@ -6,12 +6,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,13 +24,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,13 +59,25 @@ public class MyProfile extends Fragment {
     private InputStream inputStreamImg;
     private String imgPath = null;
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
+    String Storage_Path = "UserPhoto/";
+
+    public Uri downlaodUrl;
+
+    DatabaseReference dbs;
+
+    Uri FilePath;
 
     FirebaseStorage storage;
+//    StorageReference storageReference;
+
+
     StorageReference storageReference;
+    DatabaseReference databaseReference;
 
     public ImageView profileImage;
     public TextView tv;
     public Button uploadBtn;
+    public Button hobby1Btn, hobby2Btn, hobby3Btn;
 
     public static String PACKAGE_NAME;
 
@@ -79,10 +96,18 @@ public class MyProfile extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        storageReference = FirebaseStorage.getInstance().getReference();
+//        databaseReference = FirebaseDatabase.getInstance().getReference(Storage_Path);
+
+
 
     }
 
-   
+
+
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,6 +121,11 @@ public class MyProfile extends Fragment {
         profileImage = view.findViewById(R.id.Profile_Picture);
         profileImage.setImageResource(R.drawable.placeholder);
 
+//        hobby1Btn = view.findViewById(R.id.hobby_1);
+//        hobby2Btn = view.findViewById(R.id.hobby_2);
+//        hobby3Btn = view.findViewById(R.id.hobby_3);
+
+
 
         return view;
     }
@@ -104,13 +134,49 @@ public class MyProfile extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        final Intent intent = new Intent(getActivity(), HobbyCodeActivity.class);
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectImage();
             }
         });
+
+
+        ImageButton hobbyIB1 = (ImageButton) getActivity().findViewById(R.id.hobby_1_img_btn);
+        ImageButton hobbyIB2 = (ImageButton) getActivity().findViewById(R.id.hobby_2_img_btn);
+        ImageButton hobbyIB3 = (ImageButton) getActivity().findViewById(R.id.hobby_3_img_btn);
+
+
+        hobbyIB1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(intent, 1 ); ;
+            }
+        });
+
+        hobbyIB2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(intent, 1 ); ;
+            }
+        });
+
+        hobbyIB3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(intent, 1 ); ;
+            }
+        });
+//        hobby1Btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivityForResult(intent, 1 );
+//            }
+//        });
     }
+
 
 
     private void selectImage()
@@ -119,7 +185,7 @@ public class MyProfile extends Fragment {
                 MY_CAMERA_REQUEST_CODE);
         try {
 
-
+//            Storage_Path = databaseReference.toString();
 
 
             PackageManager pm = getActivity().getPackageManager();
@@ -133,6 +199,9 @@ public class MyProfile extends Fragment {
                     public void onClick(DialogInterface dialog, int item) {
                         if (options[item].equals("Take Photo")) {
                             dialog.dismiss();
+                            FirebaseDatabase.getInstance().getReference();
+//                            downlaodUrl.getPath();
+
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             startActivityForResult(intent, PICK_IMAGE_CAMERA);
                         } else if (options[item].equals("Choose From Gallery")) {
@@ -156,9 +225,28 @@ public class MyProfile extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+
+        if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+            String hobby = data.getStringExtra(HobbyCodeActivity.RESULT_HOBBYCODE);
+            byte b[] = data.getByteArrayExtra("picture");
+
+            Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+
+            ImageButton hobbyIB1 = (ImageButton) getActivity().findViewById(R.id.hobby_1_img_btn);
+            ImageButton hobbyIB2 = (ImageButton) getActivity().findViewById(R.id.hobby_2_img_btn);
+            ImageButton hobbyIB3 = (ImageButton) getActivity().findViewById(R.id.hobby_3_img_btn);
+
+            hobbyIB1.setImageBitmap(bmp);
+            Toast.makeText(getActivity(), "You selected Hobby: " + hobby, Toast.LENGTH_LONG).show();
+        }
+
         inputStreamImg = null;
         if (requestCode == PICK_IMAGE_CAMERA) {
             try {
+
+
+                FilePath = data.getData();
                 Uri selectedImage = data.getData();
                 bitmap = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -182,6 +270,8 @@ public class MyProfile extends Fragment {
                 }
 
                 imgPath = destination.getAbsolutePath();
+                imgPath.toString();
+                FilePath = downlaodUrl;
                 profileImage.setImageBitmap(bitmap);
 
             } catch (Exception e) {
@@ -195,6 +285,7 @@ public class MyProfile extends Fragment {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
                 Log.e("Activity", "Pick from Gallery::>>> ");
 
+                FilePath = data.getData();
                 imgPath = getRealPathFromURI(selectedImage);
                 destination = new File(imgPath);
                 profileImage.setImageBitmap(bitmap);
@@ -204,6 +295,32 @@ public class MyProfile extends Fragment {
             }
         }
     }
+
+
+//    public void setHobby1() {
+//
+//        final CharSequence[] options = {"Take Photo", "Choose From Gallery","Cancel"};
+//        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+//        builder.setTitle("Select Option");
+//        builder.setItems(options, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int item) {
+//                if (options[item].equals("Take Photo")) {
+//                    dialog.dismiss();
+//
+//                } else if (options[item].equals("Choose From Gallery")) {
+//                    dialog.dismiss();
+//
+//                } else if (options[item].equals("Cancel")) {
+//                    dialog.dismiss();
+//                }
+//            }
+//        });
+//        builder.show();
+//
+//    }
+
+
 
     public String getRealPathFromURI(Uri contentUri) {
         String[] proj = {MediaStore.Audio.Media.DATA};

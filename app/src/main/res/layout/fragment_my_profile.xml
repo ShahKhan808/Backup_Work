@@ -27,9 +27,6 @@
         tools:ignore="RtlCompat" />
 
 
-
-
-
             <TextView
                 android:id="@+id/name_and_age_field"
                 android:layout_width="wrap_content"
@@ -39,47 +36,46 @@
                 android:layout_below="@id/Profile_Picture"
                 android:text="Abdullah, 21" />
 
-            <ImageView
-                android:id="@+id/onlineStat"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/name_and_age_field"
-                android:layout_marginBottom="261dp" />
+    <ImageView
+        android:id="@+id/onlineStat"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/Profile_Picture"
+        android:layout_toRightOf="@+id/name_and_age_field"
+        />
 
-            <ImageView
-                android:id="@+id/audioPlayer"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_below="@id/name_and_age_field"
-                />
 
-            <ImageView
-                android:id="@+id/hobby_1"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/audioPlayer"
-                android:layout_marginStart="100dp"
-                android:layout_marginLeft="100dp"/>
+    <Button
+        android:id="@+id/audioRecorder"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/name_and_age_field"
+        android:text="TAP TO HOLD" />
 
-            <ImageView
-                android:id="@+id/hobby_2"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_below="@+id/audioPlayer"
-                android:layout_toRightOf="@+id/hobby_1"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"/>
+    <ImageButton
+        android:id="@+id/hobby_1_img_btn"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="40dp"
+        android:layout_below="@+id/audioRecorder"
+        />
 
-            <ImageView
-                android:id="@+id/hobby_3"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_toRightOf="@+id/hobby_2"
-                android:layout_below="@+id/audioPlayer"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"/>
+    <ImageButton
+        android:id="@+id/hobby_2_img_btn"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/audioRecorder"
+        android:layout_toRightOf="@id/hobby_1_img_btn"
+        android:layout_marginLeft="20dp"
+        />
+
+    <ImageButton
+        android:id="@+id/hobby_3_img_btn"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/audioRecorder"
+        android:layout_toRightOf="@id/hobby_2_img_btn"
+        android:layout_marginLeft="20dp"
+         />
 
 </RelativeLayout>

@@ -1,3 +1,4 @@
+
 package com.example.teamc.friendfinder;
 
 import android.content.Intent;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
             String text;
+
 
             switch (item.getItemId()) {
                 case R.id.navigation_my_profile:
