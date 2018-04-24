@@ -9,13 +9,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by shahkhan on 14/03/2018.
@@ -33,6 +37,10 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
     private EditText editTextAge;
     private EditText editTextRetypeEmail;
     private EditText editTextRetypePass;
+    private Spinner spinnerGender;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference databaseUsers = database.getReference("users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +56,10 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
         editTextRetypePass = (EditText) findViewById(R.id.retype_register_password);
         editTextAge = (EditText) findViewById(R.id.users_age);
         buttonRegister.setOnClickListener(this);
+        spinnerGender = (Spinner) findViewById(R.id.spinnerSex);
         mAuth = FirebaseAuth.getInstance();
 
+        FirebaseApp.initializeApp(getApplicationContext());
 
     }
 
@@ -128,6 +138,8 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
                             sendEmailVerification();
+                            addUser();
+                            finish();
 
                             //intent takes user back to login activity
 
@@ -200,12 +212,25 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
         return valid;
     }
 
+    public void addUser() {
+        String name = editTextName.getText().toString().trim();
+        String gender = spinnerGender.getSelectedItem().toString();
+        int age = Integer.parseInt(editTextAge.getText().toString());
+        boolean onlineStatus = false;
+
+        String id = databaseUsers.push().getKey();
+
+        myUser user = new myUser(id, name, age, gender);
+
+        databaseUsers.child(id).setValue(user);
+
+    }
+
     @Override
     public void onClick(View view) {
 
         if (view == buttonRegister) {
             createAccount(editTextEmail.getText().toString(), editTextPassword.getText().toString());
-
         }
     }
 }

@@ -10,17 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.teamc.friendfinder.RegisterAccount">
 
-    <!-- Login progress -->
-
-    <TextView
-        android:id="@+id/status"
-        style="@style/ThemeOverlay.MyTextDetail"
-        android:text="Signed Out" />
-
-    <TextView
-        android:id="@+id/detail"
-        style="@style/ThemeOverlay.MyTextDetail"
-        tools:text="Firebase User ID: 123456789abc" />
 
     <ScrollView
         android:id="@+id/register_form"
@@ -48,6 +37,13 @@
                 android:hint="Age"
                 android:inputType="number"
                 android:maxLines="1" />
+
+            <Spinner
+                android:id="@+id/spinnerSex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Gender"
+                android:entries="@array/Gender" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
