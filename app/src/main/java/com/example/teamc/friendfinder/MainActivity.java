@@ -1,11 +1,11 @@
 package com.example.teamc.friendfinder;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.sax.StartElementListener;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,11 +23,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.Locale;
+
+public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     private FirebaseAuth mAuth;
     private DatabaseReference userDbReference;
     private FirebaseUser user;
+    myUser user1 = new myUser();
+
+    TextToSpeech tts;
+    int result;
+
+
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -37,8 +44,26 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+            String text;
+
             switch (item.getItemId()) {
                 case R.id.navigation_my_profile:
+
+                    if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA)
+                    {
+                        Toast.makeText(getApplicationContext(), "Feature Not Supported in your Device",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        text = item.toString();
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                        } else {
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                        }
+                    }
+
+
                     MyProfile myProfile = new MyProfile();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.content, myProfile, "Fragment Name");
@@ -46,18 +71,61 @@ public class MainActivity extends AppCompatActivity {
 
                     return true;
                 case R.id.navigation_browse_user_profiles:
+
+                    if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA)
+                    {
+                        Toast.makeText(getApplicationContext(), "Feature Not Supported in your Device",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        text = item.toString();
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                        } else {
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                        }
+                    }
+
                     BrowseProfiles browseProfiles = new BrowseProfiles();
                     FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction2.replace(R.id.content, browseProfiles, "Fragment Name");
                     fragmentTransaction2.commit();
                     return true;
                 case R.id.navigaion_chat:
+
+                    if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA)
+                    {
+                        Toast.makeText(getApplicationContext(), "Feature Not Supported in your Device",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        text = item.toString();
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                        } else {
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                        }
+                    }
                     Chat chat = new Chat();
                     FragmentTransaction fragmentTransaction3 = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction3.replace(R.id.content, chat, "Fragment Name");
                     fragmentTransaction3.commit();
                     return true;
                 case R.id.navigation_notifications:
+
+                    if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA)
+                    {
+                        Toast.makeText(getApplicationContext(), "Feature Not Supported in your Device",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        text = item.toString();
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                        } else {
+                            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                        }
+                    }
                     Notifications notifications = new Notifications();
                     FragmentTransaction fragmentTransaction4 = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction4.replace(R.id.content, notifications, "Fragment Name");
@@ -81,8 +149,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
 
-        if(i == R.id.action_signOut) {
-
+        if (i == R.id.action_signOut) {
 
 
             finish();
@@ -115,11 +182,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    myUser user1 = new myUser();
-    @Override
-    protected void onStart() {
-        super.onStart();
 
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//
+//        //Put this in onCreate method instead
+//
+//
+////            user1.setOnlineStatusTrue();
+////
+////            if(user1.getOnlineStatus() == true){
+////                Toast.makeText(this, "You are online!", Toast.LENGTH_SHORT).show();
+////            }
+//
+//        }
+//    }
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.mainactivity);
+
+        tts = new TextToSpeech(MainActivity.this, MainActivity.this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -145,27 +238,23 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-
-
-//            user1.setOnlineStatusTrue();
-//
-//            if(user1.getOnlineStatus() == true){
-//                Toast.makeText(this, "You are online!", Toast.LENGTH_SHORT).show();
-//            }
-
         }
+
     }
+
+    String text;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.mainactivity);
+    public void onInit(int status) {
+        result = tts.setLanguage(Locale.US);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if (status == TextToSpeech.SUCCESS) {
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+            tts.setLanguage(Locale.ENGLISH);
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Feature Not Supported in your Device",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
-
 }
