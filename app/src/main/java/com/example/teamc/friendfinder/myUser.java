@@ -1,24 +1,34 @@
 package com.example.teamc.friendfinder;
 
+import java.io.Serializable;
+
 /**
  * Created by shahkhan on 08/04/2018.
  */
 
 public class myUser {
 
-    String userId;
-    String userName;
-    int userAge;
-    String userGender;
+    private int userAge;
+    private String userGender;
+    private String userId;
+    private String userName;
 
+    public myUser() {
+
+    }
     //Default constructor will have/set the default info for the users such as:
     //(auto generated) id name, age, and gender initialised at creation time
-    public myUser(String userId, String userName, int userAge, String userGender) {
-        this.userId = userId;
-        this.userName = userName;
+
+
+    public myUser(int userAge, String userGender, String userId, String userName ) {
+
         this.userAge = userAge;
         this.userGender = userGender;
+        this.userId = userId;
+        this.userName = userName;
+
     }
+
 
     //Getters
     public String getUserId() {
@@ -36,6 +46,5 @@ public class myUser {
     public String getUserGender() {
         return userGender;
     }
-
 
 }

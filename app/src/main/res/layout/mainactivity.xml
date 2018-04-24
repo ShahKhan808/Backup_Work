@@ -12,9 +12,12 @@
         android:id="@+id/toolbar"
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         app:titleTextAppearance="@style/Toolbar.TitleText"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:titleTextColor="@color/whitecolor"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+
         ></android.support.v7.widget.Toolbar>
 
     <FrameLayout

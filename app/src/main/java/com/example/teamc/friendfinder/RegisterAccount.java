@@ -39,13 +39,14 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
     private EditText editTextRetypePass;
     private Spinner spinnerGender;
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference databaseUsers = database.getReference("users");
+    DatabaseReference databaseUsers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration_form);
+
+        databaseUsers = FirebaseDatabase.getInstance().getReference("users");
 
         verifyEmailBtn = (Button) findViewById(R.id.verify_email_button);
         buttonRegister = (Button) findViewById(R.id.registration_button);
@@ -59,7 +60,7 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
         spinnerGender = (Spinner) findViewById(R.id.spinnerSex);
         mAuth = FirebaseAuth.getInstance();
 
-        FirebaseApp.initializeApp(getApplicationContext());
+       // FirebaseApp.initializeApp(getApplicationContext());
 
     }
 
@@ -125,20 +126,16 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             // user registered, start profile activity
                             Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             Toast.makeText(RegisterAccount.this, "Verify your email", Toast.LENGTH_LONG).show();
-
+                            addUser();
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
                             sendEmailVerification();
-                            addUser();
                             finish();
 
                             //intent takes user back to login activity
@@ -218,11 +215,11 @@ public class RegisterAccount extends AppCompatActivity implements View.OnClickLi
         int age = Integer.parseInt(editTextAge.getText().toString());
         boolean onlineStatus = false;
 
-        String id = databaseUsers.push().getKey();
+        String id = mAuth.getCurrentUser().getUid().toString();
 
-        myUser user = new myUser(id, name, age, gender);
+        myUser userRef = new myUser(age, gender, id, name );
 
-        databaseUsers.child(id).setValue(user);
+        databaseUsers.child(id).setValue(userRef);
 
     }
 

@@ -76,38 +76,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth.addAuthStateListener(mAuthListener);
     }
-//    private void sendEmailVerification() {
-//        // Disable button
-//        // findViewById(R.id.registration_button).setEnabled(false);
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        // Send verification email
-//        // [START send_email_verification]
-//        if (user != null) {
-//
-//            user.sendEmailVerification()
-//                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            // [START_EXCLUDE]
-//                            // Re-enable button
-//                            //findViewById(R.id.registration_button).setEnabled(true);
-//
-//                            if (task.isSuccessful()) {
-//                                Toast.makeText(LoginActivity.this,
-//                                        "Check your email for verification",
-//                                        Toast.LENGTH_SHORT).show();
-//                                FirebaseAuth.getInstance().signOut();
-//                            } else {
-//                                Log.e(TAG, "sendEmailVerification", task.getException());
-//                                Toast.makeText(LoginActivity.this,
-//                                        "Failed to send verification email.",
-//                                        Toast.LENGTH_SHORT).show();
-//                            }
-//                            // [END_EXCLUDE]
-//                        }
-//                    });
-//        }
-//    }
 
     private void signIn() {
 
@@ -135,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                         Intent goToProfile = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(goToProfile);
                         finish();
-                        //sendEmailVerification();
+
                     }
                 }
             });

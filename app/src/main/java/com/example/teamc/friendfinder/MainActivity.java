@@ -18,9 +18,17 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+    private DatabaseReference userDbReference;
+    private FirebaseUser user;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -74,14 +82,79 @@ public class MainActivity extends AppCompatActivity {
         int i = item.getItemId();
 
         if(i == R.id.action_signOut) {
-            FirebaseAuth.getInstance().getCurrentUser();
-            Toast.makeText(this, "Signed Out", Toast.LENGTH_SHORT).show();
+
+
+
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
         return true;
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        FirebaseAuth.getInstance().getCurrentUser();
+
+        userDbReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                userDbReference.child("onlineStatus").setValue(false);
+                userDbReference.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+
+    myUser user1 = new myUser();
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        if (user != null) {
+
+            final String online_user_id = user.getUid();
+
+            userDbReference = FirebaseDatabase.getInstance().getReference().child("users")
+                    .child(online_user_id);
+
+            userDbReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    userDbReference.child("onlineStatus").setValue(true);
+                    userDbReference.child("onlineStatus").onDisconnect().setValue(false);
+                    userDbReference.removeEventListener(this);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+//            user1.setOnlineStatusTrue();
+//
+//            if(user1.getOnlineStatus() == true){
+//                Toast.makeText(this, "You are online!", Toast.LENGTH_SHORT).show();
+//            }
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
