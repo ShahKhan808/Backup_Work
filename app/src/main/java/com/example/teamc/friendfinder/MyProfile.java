@@ -153,21 +153,22 @@ public class MyProfile extends Fragment {
         hobbyIB1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(intent, 1 ); ;
+                startActivityForResult(intent, 23 ); ;
+                //just an arbritrary number as it clashes with the camera
             }
         });
 
         hobbyIB2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(intent, 2 ); ;
+                startActivityForResult(intent, 24 ); ;
             }
         });
 
         hobbyIB3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(intent, 3 ); ;
+                startActivityForResult(intent, 25 ); ;
             }
         });
 
@@ -230,7 +231,7 @@ public class MyProfile extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
 
-        if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+        if(requestCode == 23 && resultCode == Activity.RESULT_OK){
             String hobby = data.getStringExtra("name");
             byte b[] = data.getByteArrayExtra("picture");
 
@@ -242,7 +243,7 @@ public class MyProfile extends Fragment {
             Toast.makeText(getActivity(), "You selected Hobby: " + hobby, Toast.LENGTH_LONG).show();
         }
 
-        if(requestCode == 2 && resultCode == Activity.RESULT_OK){
+        if(requestCode == 24 && resultCode == Activity.RESULT_OK){
             String hobby = data.getStringExtra("name");
             byte b[] = data.getByteArrayExtra("picture");
 
@@ -254,7 +255,7 @@ public class MyProfile extends Fragment {
             Toast.makeText(getActivity(), "You selected Hobby: " + hobby, Toast.LENGTH_LONG).show();
         }
 
-        if(requestCode == 3 && resultCode == Activity.RESULT_OK){
+        if(requestCode == 24 && resultCode == Activity.RESULT_OK){
             String hobby = data.getStringExtra("name");
             byte b[] = data.getByteArrayExtra("picture");
 
